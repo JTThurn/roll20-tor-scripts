@@ -26,7 +26,7 @@ on('chat:message', function (obj) {
                     if (newStance !== 6 && newStance !== 9 && newStance !== 12) {
 
                     } else {
-                        sendChat('character|'+characterid, 'changes stance to ' + newStance);
+                        // sendChat('character|'+characterid, 'changes stance to ' + newStance);
                         stance.set('current', newStance);
                     }
 
