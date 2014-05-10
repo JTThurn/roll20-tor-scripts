@@ -9,13 +9,13 @@ on('chat:message', function (obj) {
 
         // for each selected token
         _.each(selected, function(selection) {
-            var token = findObjs({
+            var tokens = findObjs({
                 _id: selection._id,
                 type: 'graphic'
             });
 
-            if (token.length > 0) {
-                var characterid = token[0].get('represents');
+            if (tokens.length > 0) {
+                var characterid = tokens[0].get('represents');
                 var stance = findObjs({
                     _characterid: characterid,
                     _type: 'attribute',
@@ -30,6 +30,18 @@ on('chat:message', function (obj) {
                         stance.set('current', newStance);
                     }
                 }
+
+                // mark the token with the stance
+                // (doesn't work, because colors don't take 10+ values)
+                // _.each(tokens, function(token) {
+                //     log(token)
+                //     log(newStance)
+                //     if (newStance !== 0) {
+                //         token.set('status_green', newStance);
+                //     } else {
+                //         token.set('status_green', false);
+                //     }
+                // });
             }
         });
     }

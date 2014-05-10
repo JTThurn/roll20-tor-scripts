@@ -81,7 +81,7 @@ var checkWeary = function (character) {
 
     // WEARY
 
-    // character
+    // characters only
     if (fatigue && endurance && weary && !hate) {
         if (endurance.get('current') < fatigue.get('current')) {
             weary.set('current', 'weary');
@@ -95,14 +95,6 @@ var checkWeary = function (character) {
                 token.set('status_yellow', false);
             }, this);
         }
-
-    // creature
-    } else {
-
-        // if bar 2 (hate) is less than 1,
-        // set bar 3 to 'weary',
-        // otherwise set it to 'normal'
-
     }
 
     // WOUNDED
