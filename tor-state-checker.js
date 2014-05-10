@@ -69,6 +69,11 @@ var checkWeary = function (character) {
         _type: 'attribute',
         name: 'wound_treated'
     })[0];
+    var hate = findObjs({
+        _characterid: characterid,
+        _type: 'attribute',
+        name: 'hate'
+    })[0];
     var tokens = findObjs({
         _type: 'graphic',
         represents: characterid
@@ -76,7 +81,8 @@ var checkWeary = function (character) {
 
     // WEARY
 
-    if (fatigue && endurance && weary) {
+    // character
+    if (fatigue && endurance && weary && !hate) {
         if (endurance.get('current') < fatigue.get('current')) {
             weary.set('current', 'weary');
             tokens.forEach(function(token) {
@@ -89,6 +95,14 @@ var checkWeary = function (character) {
                 token.set('status_yellow', false);
             }, this);
         }
+
+    // creature
+    } else {
+
+        // if bar 2 (hate) is less than 1,
+        // set bar 3 to 'weary',
+        // otherwise set it to 'normal'
+
     }
 
     // WOUNDED
