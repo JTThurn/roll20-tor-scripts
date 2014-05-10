@@ -29,7 +29,6 @@ on('chat:message', function (obj) {
                         // sendChat('character|'+characterid, 'changes stance to ' + newStance);
                         stance.set('current', newStance);
                     }
-
                 }
             }
         });
