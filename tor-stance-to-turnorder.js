@@ -45,7 +45,7 @@ on('chat:message', function (obj) {
 
         // resort based on stance
         sortedTurnorder = _.sortBy(sortedTurnorder, function(turn) {
-            return parseInt(turn.pr === '' ? 1 : turn.pr, 10) * -1;
+            return parseInt(turn.pr === '' ? 13 : turn.pr, 10);
         });
 
         sortedTurnorder = JSON.stringify(sortedTurnorder);
