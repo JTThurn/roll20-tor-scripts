@@ -1,36 +1,47 @@
-on('chat:message', function (obj) {
-    var contentSplit = obj.content.split(' ');
-    var command = contentSplit[0];
-    var pars = contentSplit.splice(1, contentSplit.length-1);
-    var selected = obj.selected;
+on("change:graphic:left", function(obj) { updateStanceOnDrop(obj); });
+on("change:graphic:top", function(obj) { updateStanceOnDrop(obj); });
 
-    if (command === '!stance' && selected.length > 0) {
-        var newStance = parseInt(pars[0], 10);
+var updateStanceOnDrop = function (obj) {
+    var left = parseInt(obj.get('left'), 10);
+    var top = parseInt(obj.get('top'), 10);
+    var forwardTop = 0;
+    var openTop = 290;
+    var defensiveTop = 520;
+    var rearwardTop = 760;
 
-        // for each selected token
-        _.each(selected, function(selection) {
-            var tokens = findObjs({
-                _id: selection._id,
-                type: 'graphic'
-            });
-
-            if (tokens.length > 0) {
-                var characterid = tokens[0].get('represents');
-                var stance = findObjs({
-                    _characterid: characterid,
-                    _type: 'attribute',
-                    name: 'stance'
-                })[0];
-
-                if (stance.get('current') !== newStance) {
-                    if (newStance !== 6 && newStance !== 9 && newStance !== 12) {
-
-                    } else {
-                        // sendChat('character|'+characterid, 'changes stance to ' + newStance);
-                        stance.set('current', newStance);
-                    }
-                }
-            }
-        });
+    // outside the mat.
+    if (left > 730 || top > 1010) {
+        return;
     }
-});
+
+    // forward
+    if (top < openTop) {
+        setStanceOnTokensCharacter(obj, 6);
+
+    // open
+    } else if (top >= openTop && top < defensiveTop) {
+        setStanceOnTokensCharacter(obj, 9);
+
+    // defensive
+    } else if (top >= defensiveTop && top < rearwardTop) {
+        setStanceOnTokensCharacter(obj, 12);
+
+    // rearward
+    } else if (top >= rearwardTop) {
+        setStanceOnTokensCharacter(obj, 12);
+
+   }
+};
+
+var setStanceOnTokensCharacter = function (token, newStance) {
+    var characterid = token.get('represents');
+    var stance = findObjs({
+        _characterid: characterid,
+        _type: 'attribute',
+        name: 'stance'
+    })[0];
+
+    stance.set('current', newStance);
+    sendChat('character|'+characterid, 'changes stance to ' + newStance);
+    sendChat('character|'+characterid, '!sortturnorder');
+};
