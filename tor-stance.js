@@ -43,5 +43,5 @@ var setStanceOnTokensCharacter = function (token, newStance) {
 
     stance.set('current', newStance);
     sendChat('character|'+characterid, 'changes stance to ' + newStance);
-    sendChat('character|'+characterid, '!sortturnorder');
+    sendChat('character|'+characterid, '/w gm !sortturnorder');
 };
