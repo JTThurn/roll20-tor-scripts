@@ -71,7 +71,7 @@ var getWitsFromTurn = function (turn) {
     // // stray token? ignore it
     if (characterid.length > 0) {
         var wits = getAttrByName(characterid, 'wits');
-        wits = (wits ? wits : getAttrByName(characterid, 'attribute_level'))
+        wits = (wits ? wits : getAttrByName(characterid, 'attribute_level'));
         return parseInt(wits, 10) * -1;
     }
 
