@@ -30,18 +30,6 @@ on('chat:message', function (obj) {
                         stance.set('current', newStance);
                     }
                 }
-
-                // mark the token with the stance
-                // (doesn't work, because colors don't take 10+ values)
-                // _.each(tokens, function(token) {
-                //     log(token)
-                //     log(newStance)
-                //     if (newStance !== 0) {
-                //         token.set('status_green', newStance);
-                //     } else {
-                //         token.set('status_green', false);
-                //     }
-                // });
             }
         });
     }
