@@ -6,6 +6,7 @@
     have players (and GM characters) set their Stance, simply by dropping their
     token on the right area of a Battle Mat.
 
+
     # How to Install It
 
     1) Insert the Voidstate's Battle Mat (Google it) and make it 750px wide (and
@@ -13,12 +14,28 @@
 
     2) Now name the page it's on 'Battle'.
 
+
     # How To Use
 
     1) Make sure your characters have a `stance` (lowercase) attribute.
 
     2) Drop the character tokens onto the battlemat, and their stance should
     update automatically.
+
+
+    # Further Use
+
+    - Now that characters have the stance attribute in place, and it's
+    automatically set by dragging the token, you can use it in macros like this
+    (as an example):
+
+    /r 1t[feat] + @{weapon_rating_1}t[@{weary}] + ?{Circumstantial Modifier|0} > [[@{stance} + @{target|parry}]]
+
+    - If you also use tor-dice-checker.js, with that Target Number in there,
+    it'll tell you whether it was a success or not, and if so how much.
+
+    Now that's Elven Magic.
+
 
     # More Information
 
