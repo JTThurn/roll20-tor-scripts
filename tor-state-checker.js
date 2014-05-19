@@ -83,7 +83,7 @@ var checkWeary = function (character) {
 
     // characters only
     if (fatigue && endurance && weary && !hate) {
-        if (endurance.get('current') < fatigue.get('current')) {
+        if (endurance.get('current') <= fatigue.get('current')) {
             weary.set('current', 'weary');
             tokens.forEach(function(token) {
                 token.set('status_yellow', '');
