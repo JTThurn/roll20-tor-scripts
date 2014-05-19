@@ -98,5 +98,6 @@ var setStanceOnTokensCharacter = function (token, newStance) {
     })[0];
 
     stance.set('current', newStance);
-    sendChat('character|'+characterid, '/w gm !sortturnorder');
+    sortTurnorder();
+    // sendChat('character|'+characterid, '/w gm !sortturnorder');
 };
