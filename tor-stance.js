@@ -1,7 +1,46 @@
-on("change:graphic:left", function(obj) { updateStanceOnDrop(obj); });
-on("change:graphic:top", function(obj) { updateStanceOnDrop(obj); });
+/*
+    The One Ring Stance Regions for Roll20.
+    By Michael Heilemann (michael.heilemann@me.com)
+
+    In running battles with The One Ring in Roll20, it's a very useful way to
+    have players (and GM characters) set their Stance, simply by dropping their
+    token on the right area of a Battle Mat.
+
+    # How to Install It
+
+    1) Insert the Voidstate's Battle Mat (Google it) and make it 750px wide (and
+    appropriately tall), with its top left corner at the top left.
+
+    2) Now name the page it's on 'Battle'.
+
+    # How To Use
+
+    1) Make sure your characters have a `stance` (lowercase) attribute.
+
+    2) Drop the character tokens onto the battlemat, and their stance should
+    update automatically.
+
+    # More Information
+
+    Works great with the The One Ring character sheet for Roll20.
+
+    For more of my The One Ring shenanigans:
+    https://ringen.squarespace.com/loremasters-journal/
+ */
+on("change:graphic:top", function(obj) {
+    updateStanceOnDrop(obj);
+});
 
 var updateStanceOnDrop = function (obj) {
+    var page = findObjs({
+        _type: 'page',
+        _id: obj.get('_pageid'),
+    })[0];
+
+    if (!obj.get('represents').length || page.get('name') !== 'Battle') {
+        return;
+    }
+
     var left = parseInt(obj.get('left'), 10);
     var top = parseInt(obj.get('top'), 10);
     var forwardTop = 0;
@@ -42,6 +81,5 @@ var setStanceOnTokensCharacter = function (token, newStance) {
     })[0];
 
     stance.set('current', newStance);
-    sendChat('character|'+characterid, 'changes stance to ' + newStance);
     sendChat('character|'+characterid, '/w gm !sortturnorder');
 };
