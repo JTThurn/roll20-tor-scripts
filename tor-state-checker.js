@@ -86,13 +86,15 @@ var checkWeary = function (character) {
         if (endurance.get('current') <= fatigue.get('current')) {
             weary.set('current', 'weary');
             tokens.forEach(function(token) {
-                token.set('status_yellow', '');
+                // #ff9900
+                token.set('tint_color', '#ff9900');
             }, this);
 
         } else {
             weary.set('current', 'normal');
             tokens.forEach(function(token) {
-                token.set('status_yellow', false);
+                // transparent
+                token.set('tint_color', 'transparent');
             }, this);
         }
     }
@@ -104,10 +106,14 @@ var checkWeary = function (character) {
         (wound_treated && parseInt(wound_treated.get('current'), 10) !== 0)
     ) {
         tokens.forEach(function(token) {
+            token.set('status_yellow', false);
+            // #98000
             token.set('status_red', '');
         }, this);
     } else {
         tokens.forEach(function(token) {
+            token.set('status_yellow', false);
+            // transparent
             token.set('status_red', false);
         }, this);
     }
