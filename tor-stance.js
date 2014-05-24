@@ -97,7 +97,7 @@ var setStanceOnTokensCharacter = function (token, newStance) {
         name: 'stance'
     })[0];
 
-    stance.set('current', newStance);
+    stance.set('current', newStance.toString());
     sortTurnorder();
     // sendChat('character|'+characterid, '/w gm !sortturnorder');
 };
