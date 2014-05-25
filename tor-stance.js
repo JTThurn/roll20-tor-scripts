@@ -12,15 +12,19 @@
     1) Insert the Voidstate's Battle Mat (Google it) and make it 750px wide (and
     appropriately tall), with its top left corner at the top left.
 
-    2) Now name the page it's on 'Battle'.
+    2) Name the page it's on 'Battle'.
 
 
     # How To Use
 
-    1) Make sure your characters have a `stance` (lowercase) attribute.
+    1) Make sure your characters have a `stance` (lowercase) attribute. If
+    you're using the characters sheet I made for Roll20 (it's in the dropdown),
+    it should already be available on the characters.
 
-    2) Drop the character tokens onto the battlemat, and their stance should
+    2) Drop a character's tokens onto the battlemat, and their stance should
     update automatically.
+
+    3) Fight the shadow.
 
 
     # Further Use
@@ -38,8 +42,6 @@
 
 
     # More Information
-
-    Works great with the The One Ring character sheet for Roll20.
 
     For more of my The One Ring shenanigans:
     https://ringen.squarespace.com/loremasters-journal/

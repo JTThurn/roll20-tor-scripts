@@ -50,7 +50,7 @@ var sortTurnorder = function() {
 
     // resort based on stance
     sortedTurnorder = _.sortBy(sortedTurnorder, function(turn) {
-        return parseInt(turn.pr === '' ? 13 : turn.pr, 10);
+        return parseInt(turn.pr === '' || turn.pr === '0' ? 13 : turn.pr, 10);
     });
 
     sortedTurnorder = JSON.stringify(sortedTurnorder);
