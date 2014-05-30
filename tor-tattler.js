@@ -6,6 +6,8 @@
     attributes to the GM as they're made. Very useful for making sure changes
     aren't made by accident and not having to ask whether an announce change has
     already been committed.
+
+    Has a tendency to spam the chat.
  */
 on('add:attribute', function(attr, prev) {
     tattle(attr, prev);
