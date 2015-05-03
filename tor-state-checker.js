@@ -44,46 +44,22 @@ on('change:attribute', function(obj, prev) {
 
 var checkWeary = function (character) {
     var characterid = character.get('_id');
-    var fatigue = findObjs({
-        _characterid: characterid,
-        _type: 'attribute',
-        name: 'total_fatigue'
-    })[0];
-    var endurance = findObjs({
-        _characterid: characterid,
-        _type: 'attribute',
-        name: 'endurance'
-    })[0];
-    var weary = findObjs({
-        _characterid: characterid,
-        _type: 'attribute',
-        name: 'weary'
-    })[0];
-    var wounded = findObjs({
-        _characterid: characterid,
-        _type: 'attribute',
-        name: 'wounded'
-    })[0];
-    var wound_treated = findObjs({
-        _characterid: characterid,
-        _type: 'attribute',
-        name: 'wound_treated'
-    })[0];
-    var hate = findObjs({
-        _characterid: characterid,
-        _type: 'attribute',
-        name: 'hate'
-    })[0];
     var tokens = findObjs({
         _type: 'graphic',
         represents: characterid
     });
+    var fatigue = getAttrByName(characterid, 'total_fatigue', 'current');
+    var endurance = getAttrByName(characterid, 'endurance', 'current');
+    var weary = getAttrByName(characterid, 'weary', 'current');
+    var wounded = getAttrByName(characterid, 'wounded', 'current');
+    var wound_treated = getAttrByName(characterid, 'wound_treated', 'current');
+    var hate = getAttrByName(characterid, 'hate', 'current');
 
     // WEARY
 
     // characters only
     if (fatigue && endurance && weary && !hate) {
-        if (endurance.get('current') <= fatigue.get('current')) {
+        if (endurance <= fatigue) {
             weary.set('current', 'weary');
             tokens.forEach(function(token) {
                 // #ff9900
@@ -102,8 +78,8 @@ var checkWeary = function (character) {
     // WOUNDED
 
     if (
-        (wounded && parseInt(wounded.get('current'), 10) !== 0) ||
-        (wound_treated && parseInt(wound_treated.get('current'), 10) !== 0)
+        (wounded && parseInt(wounded, 10) !== 0) ||
+        (wound_treated && parseInt(wound_treated, 10) !== 0)
     ) {
         tokens.forEach(function(token) {
             token.set('status_yellow', false);
