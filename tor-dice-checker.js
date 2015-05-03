@@ -65,34 +65,34 @@ on('chat:message', function(e) {
         // gandalf rune for feat table, or eye for lm-feat table
         if (automatic) {
             if (tengwars === 0) {
-                sendChat("player|"+e.playerid, "/desc Automatic success!");
+                sendChat("player|"+e.playerid, "/desc rolls an automatic success!");
             } else  if (tengwars === 1) {
-                sendChat("player|"+e.playerid, "/desc Automatic great success!");
+                sendChat("player|"+e.playerid, "/desc rolls an automatic great success!");
             } else if (tengwars > 1) {
-                sendChat("player|"+e.playerid, "/desc Automatic extraordinary success!");
+                sendChat("player|"+e.playerid, "/desc rolls an automatic extraordinary success!");
             }
 
         // a hit
         } else if (tn !== false && content.total >= tn) {
             if (tengwars === 0) {
-                sendChat("player|"+e.playerid, "/desc A success!");
+                sendChat("player|"+e.playerid, "/desc rolls a success!");
             } else  if (tengwars === 1) {
-                sendChat("player|"+e.playerid, "/desc A Great Success!");
+                sendChat("player|"+e.playerid, "/desc rolls a great success!");
             } else if (tengwars > 1) {
-                sendChat("player|"+e.playerid, "/desc An Extraordinary Success!");
+                sendChat("player|"+e.playerid, "/desc rolls an extraordinary success!");
             }
 
         // a miss
         } else if (tn !== false && content.total < tn) {
-            sendChat("player|"+e.playerid, "/desc A miss.");
+            sendChat("player|"+e.playerid, "/desc misses.");
 
         } else {
             if (tengwars === 1) {
-                sendChat("player|"+e.playerid, "/desc One tengwar.");
+                sendChat("player|"+e.playerid, "/desc rolls a tengwar.");
             } else if (tengwars === 2) {
-                sendChat("player|"+e.playerid, "/desc Two tengwars.");
+                sendChat("player|"+e.playerid, "/desc rolls two tengwars!");
             } else if (tengwars > 2) {
-                sendChat("player|"+e.playerid, "/desc Whole lotta tengwars.");
+                sendChat("player|"+e.playerid, "/desc rolls whole lotta tengwars!");
             }
 
         }
