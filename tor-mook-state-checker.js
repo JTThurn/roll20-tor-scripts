@@ -38,20 +38,19 @@ on('ready', function() {
     characters.forEach(checkMook, this);
 });
 
-on('change:graphic:bar1_value', function(token) {
+on('change:graphic:bar2_value', function(token) {
     checkMook(token);
 });
 
 var checkMook = function (token) {
     if (token.get('bar1_link')) {
-        // doesn't seem to be a mook, abort!
+        // mook's shouldn't have bar1 linked, so this isn't a mook, abort!
         return;
     }
 
-    var endurance = token.get('bar1_value');
     var hate = token.get('bar2_value');
 
-    if (hate === 0) {
+    if (hate === '0') {
         token.set('bar3_value', 'weary');
     } else {
         token.set('bar3_value', 'normal');
