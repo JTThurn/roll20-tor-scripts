@@ -28,6 +28,12 @@
     mostly to serve as a reminder.
     It requires that the characters have 'wounded' and "wound_treated' 
     attributes.
+    
+    # Miserable
+    Sets a marker on the tokens of miserable characters.
+    Needs 'total_shadow', 'temporary_shadow' and 'permanent_shadow' as well as 
+    'miserable' and 'hope' attributes.
+    
     # More Information
     Works great with the The One Ring character sheet for Roll20.
     For more of my The One Ring shenanigans:
@@ -50,6 +56,7 @@ on('change:attribute', function(obj, prev) {
 
 var checkWeary = function (character) {
     var characterid = character.get('_id');
+    var charactername = character.get('name');
     var tokens = findObjs({
         _type: 'graphic',
         represents: characterid
@@ -62,7 +69,7 @@ var checkWeary = function (character) {
 
     // characters only
     if (isplayer === '1') {
-        // do some calculations
+        // do some calculations on fatigue
         // weapon encumbrance
         var weapon_encumbrance_1 = getAttrByName(characterid, 'weapon_encumbrance_1', 'current');
         var weapon_encumbrance_2 = getAttrByName(characterid, 'weapon_encumbrance_2', 'current');
@@ -87,12 +94,19 @@ var checkWeary = function (character) {
         // sum it all up
         var total_fatigue = parseInt(travel_fatigue, 10) + weapon_encumbrance + gear_encumbrance;
         
+        // do some calculation on miserable
+        var permanent_shadow = getAttrByName(characterid, 'permanent_shadow', 'current');
+        var temporary_shadow = getAttrByName(characterid, 'temporary_shadow', 'current');
+        var total_shadow = parseInt(permanent_shadow, 10) + parseInt(temporary_shadow, 10);
+        
         // setting the other variables, make sure they are created in the sheet
         var endurance = getAttrByName(characterid, 'endurance', 'current');
         var weary = getAttrByName(characterid, 'weary', 'current');
         var wounded = getAttrByName(characterid, 'wounded', 'current');
         var wound_treated = getAttrByName(characterid, 'wound_treated', 'current');
-    
+        var miserable = getAttrByName(characterid, 'miserable', 'current');
+        var hope = getAttrByName(characterid, 'hope', 'current');
+            
         // compare endurance to total_fatigue, lesser or equal triggers the "weary" state
         if (endurance <= total_fatigue) {
             // optional: send a message to everyone: 'ist erschöpft' means 'is weary' in German ;)
@@ -108,7 +122,7 @@ var checkWeary = function (character) {
                 token.set('bar3_value', 'weary');
             }, this);
 
-        } else {
+        } else if (endurance > total_fatigue) {
             //weary.set('current', 'normal'); --> this doesn't work
             // optional: send a message to everyone: 'ist wieder wohlauf' means 'is fit again' in German ;)
             // but send the message only on state changes
@@ -121,6 +135,8 @@ var checkWeary = function (character) {
                 // as I have no clue on how to set an attribute
                 token.set('bar3_value', 'normal');
             }, this);
+        } else {
+            return;
         }
     }
 
@@ -139,5 +155,36 @@ var checkWeary = function (character) {
             // transparent
             token.set('status_half-heart', false);
         }, this);
+    }
+    
+    // MISERABLE
+    
+    if (
+        // hope is below or equal shadow, but not if shadow is 0
+        (parseInt(hope, 10) <= parseInt(total_shadow, 10) && parseInt(total_shadow, 10) != 0) ||
+        // in case it has been set manually by the player, e.g. as result of a hazard
+        (miserable === '1')
+    ) {
+        // optional: send a message to everyone: 'ist verzweifelt' means 'is miserable' in German ;)
+        // but send the message only on state changes
+        if (miserable === '0') {
+            sendChat('character|'+characterid, '/me ist verzweifelt!');
+            // send a secret reminder to the player to check the box on the character sheet, 'Haken setzen!' means 'check box!' ;)
+            sendChat('character|'+characterid, '/w ' + charactername + ' Haken setzen!');
+        }
+        tokens.forEach(function(token) {
+            // #98000
+            token.set('status_bleeding-eye', '');
+        }, this);
+    } else if (
+        (miserable === '0') ||
+        (parseInt(hope, 10) > parseInt(total_shadow, 10))
+    ) {
+        tokens.forEach(function(token) {
+            // transparent
+            token.set('status_bleeding-eye', false);
+        }, this);
+    } else {
+        return;
     }
 };
