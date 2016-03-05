@@ -2,7 +2,7 @@
     The One Ring Dice Checker for Roll20.
     By Michael Heilemann (michael.heilemann@me.com)
     Updated by uhu79
-	
+    
     This is an API script for Roll20.net, which checks rolls against the success
     criteria of the The One Ring system, and is best used in conjunction with
     the custom dice roll tables (https://wiki.roll20.net/The_One_Ring).
@@ -20,7 +20,7 @@
 	It also checks if your are using 'speaking as' and displays the name accordingly.
     
     Update: 
-    it also checks if you have rolled edge on your attack roll
+    it also checks if you have rolled EDGE on your feat-die with the attack roll
     this only works if your macros are following a clear structure and your roll
     commands for rolls look like this:
     
@@ -28,20 +28,24 @@
     where after ">" you have the target number for this roll
     
     and in case of an attack the roll should look like this:
-        /r 1t[feat] + @{selected|weapon_rating_1}t[@{selected|Weary}] > [[?{modifier|0} +@{selected|stance} + @{target|parry} + @{target|shield}]] w 1
-    where at the end you put the number of the weapon this macro is for
+        /r 1t[feat] + @{selected|weapon_rating_1}t[@{selected|Weary}] > [[?{modifier|0} +@{selected|stance} + @{target|parry} + @{target|shield}]] Edge: @{selected|weapon_edge_1}
+    where at the end you put the edge-attribute of the weapon
+	
+	Additionally, this script now also checks if a player rolled an eye on a missed attack.
+	A chat msg is sent accordingly, stating that the opponent might try a called shot next.
  */
 on('chat:message', function(e) {
     if (e.type === 'rollresult') {
         var content = JSON.parse(e.content);
         var rolls = content.rolls;
         var tn = false;
-        var weapon = false;
-        var edge;
+        var edge = false;
         var automatic = false;
+		var eye = false;
         var tengwars = 0;
         var featResult;
         var piercing = "";
+		var eyeOnAttack = "";
 
     //log(content);
 
@@ -57,19 +61,22 @@ on('chat:message', function(e) {
                 var text = roll.text.replace(/\s/g, ''); // remove whitespace
                 //split the string into an array separated by space
                 var params = roll.text.splitArgs();
+                //log(params);
                 //the target number is found at position 1 of the array (see the macro)
                 tn = params[1];
-                //the weapon-slot number is found at position 3 of the array (see the macro)
-                //if this is not an attack-roll then the variable weapon will be undefined
-                weapon = params[3];
+                //the edge value is found at position 4 of the array (see the macro)
+				//a params array for attack-rolls should look like this [">", "(tn)", "Edge:", "(edge)"]
+                //if this is not an attack-roll then the variable edge will be undefined
+                edge = params[3];
             }
 
             // loop through dice results
             if (roll.type === 'R') {
                 if (roll.sides === 12) {
                     featResult = roll.results[0].v;
-                    automatic = (roll.table === 'lm-feat' && roll.results[0].tableidx === 10 ? true : automatic); // eye
-                    automatic = (roll.table === 'feat' && roll.results[0].tableidx === 11 ? true : automatic); // gandalf
+                    automatic = (roll.table === 'lm-feat' && roll.results[0].tableidx === 10 ? true : automatic); // eye as adversary
+                    automatic = (roll.table === 'feat' && roll.results[0].tableidx === 11 ? true : automatic); // gandalf as player
+					eye = (roll.table === 'feat' && roll.results[0].tableidx === 10 ? true : eye); // eye as player
                 }
 
                 if (roll.sides === 6) {
@@ -81,19 +88,33 @@ on('chat:message', function(e) {
             }
         }, this);
 
-        //checking for EDGE as well
-        //if this is an attack, then weapon is set (see macro)
-        if (weapon) {
-        //looking up the edge-attribute only works if a speaking as character
+        //set chat msgs
+        //if this is an attack, then edge is set (see macro)
+        if (edge) {
+			if (featResult >= edge || automatic) {
+                piercing = " And might inflict a wound!";
+			}
+			//setting a chat-msg if player has rolled an eye during an attack
+			if (eye) {
+				eyeOnAttack = " And provokes the opponent to try a Called Shot next round!";
+			}
+        }
+		
+		/*
+		//old version where the weapon-slot-nr was handed over via macro
+		//this only worked with players though, so I changed it
+		if (weapon) {
+		//looking up the edge-attribute only works if a speaking as character
             if (speaking) {
                 var edge = getAttrByName(speaking.id, 'weapon_edge_'+weapon, 'current');
                 if (featResult >= edge || automatic) {
                     piercing = " Und schlägt vielleicht eine Wunde!";
                 }
             }
-        }
+		*/
+		
 
-        // gandalf rune for feat table, or eye for lm-feat table
+// gandalf rune for feat table, or eye for lm-feat table
         if (automatic) {
             if (tengwars === 0) {
                 if(speaking) sendChat('character|'+speaking.id, '/desc rolls an automatic success!'+piercing);
@@ -123,8 +144,8 @@ on('chat:message', function(e) {
 
         // a miss
         } else if (tn !== false && content.total < tn) {
-            if(speaking) sendChat('character|'+speaking.id, '/desc misses.');
-            else sendChat('player|'+e.playerid, '/desc misses.');
+            if(speaking) sendChat('character|'+speaking.id, '/desc misses.'+eyeOnAttack);
+            else sendChat('player|'+e.playerid, '/desc misses.'eyeOnAttack);
 
         } else {
             if (tengwars === 1) {
