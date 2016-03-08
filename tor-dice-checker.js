@@ -36,24 +36,23 @@
  */
 on('chat:message', function(e) {
     if (e.type === 'rollresult') {
-        var content = JSON.parse(e.content);
-        var rolls = content.rolls;
-        var tn = false;
-        var edge = false;
-        var automatic = false;
+		var content = JSON.parse(e.content);
+		var rolls = content.rolls;
+		var tn = false;
+		var edge = false;
+		var automatic = false;
 		var eye = false;
-        var tengwars = 0;
-        var featResult;
-        var piercing = "";
+		var tengwars = 0;
+		var featResult;
+		var piercing = "";
 		var eyeOnAttack = "";
+		
+		//log(content);
 
-    //log(content);
-
-    // determine who triggered the roll, player or character
-    var characters = findObjs({_type: 'character'});
-    var speaking;
-    characters.forEach(function(chr) { if(chr.get('name') == e.who) speaking = chr; });
-
+		// determine who triggered the roll, player or character
+		var characters = findObjs({_type: 'character'});
+		var speaking;
+		characters.forEach(function(chr) { if(chr.get('name') == e.who) speaking = chr; });
     
         rolls.forEach(function(roll) {
             // detect Target Number
@@ -112,9 +111,8 @@ on('chat:message', function(e) {
                 }
             }
 		*/
-		
 
-// gandalf rune for feat table, or eye for lm-feat table
+		// gandalf rune for feat table, or eye for lm-feat table
         if (automatic) {
             if (tengwars === 0) {
                 if(speaking) sendChat('character|'+speaking.id, '/desc rolls an automatic success!'+piercing);
@@ -126,8 +124,6 @@ on('chat:message', function(e) {
                 if(speaking) sendChat('character|'+speaking.id, '/desc rolls an automatic extraordinary success!'+piercing);
                 else sendChat('player|'+e.playerid, '/desc rolls an automatic extraordinary success!'+piercing);
             }
-            
-
             
         // a hit
         } else if (tn !== false && content.total >= tn) {
