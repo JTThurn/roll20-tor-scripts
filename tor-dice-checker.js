@@ -142,7 +142,7 @@ on('chat:message', function(e) {
 		// a miss
 		} else if (tn !== false && content.total < tn) {
 			if(speaking) sendChat('character|'+speaking.id, '/desc misses.'+eyeOnAttack);
-			else sendChat('player|'+e.playerid, '/desc misses.'eyeOnAttack);
+			else sendChat('player|'+e.playerid, '/desc misses.'+eyeOnAttack);
 
 		} else {
 			if (tengwars === 1) {
